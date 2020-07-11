@@ -1,116 +1,120 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' ;
-import './items.dart';
-import './add_Items.dart';
-import './itemsList.dart' ;
-import './chart.dart' ;
-
-void main() => runApp(MeinTaskApp());
+import './widgets/new_transiction.dart';
+import './models/transiction.dart';
+import 'widgets/transiction_list.dart';
+import 'widgets/chart.dart';
 
 
-class MeinTaskApp extends StatelessWidget {
+
+void main() => runApp(MyApp()) ;
+
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primaryColor: Colors.green),
-      home: _HomePage(),
+      theme: ThemeData(primarySwatch:Colors.red , accentColor: Colors.green),
+      home : _HomePage()
     );
   }
 }
 
 class _HomePage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<_HomePage> {
+class _HomePageState extends State<_HomePage> {
 
+final List<Transiction> _userTransictions = [
+ /*    Transiction(
+         id : 'ua' ,
+         name : 'buying udemy courses' ,
+         amount : 11.99 ,
+         date : DateTime.now() ,
 
-  final List<Items> _itemlist = [
-    Items(
-        name : 'Hang out with Crash',
-        time : DateTime.now(),
-        id :  DateTime.now().toString(),
-    ),
+       ),
 
-    Items(
-        name : 'Hang out with Freeinds',
-        time : DateTime.now(),
-        id :  DateTime.now().toString(),
-    ),
+         Transiction(
+         id : 'uai' ,
+         name : 'buying clothes' ,
+         amount : 20.99 ,
+         date : DateTime.now() ,
+       ), */
   ];
 
-// Add Item function
-void _itemAdd(String addTask) {
-  final _addItem = Items(
-    name: addTask ,
-    time :  DateTime.now(),
-    id :  DateTime.now().toString(),
-  );
-  setState(() {
-       _itemlist.add(_addItem);
-  });
-}
+  List<Transiction> get _latestTranscition {
+    return _userTransictions.where( (dateFilter) {
+      return dateFilter.date.isAfter(DateTime.now().subtract(Duration(days: 7),),);
+    }).toList();
+  }
 
-// Adding item function to Icons => Add(FloatingAcctionButton)
-void startAddingItem(BuildContext context) {
-  showModalBottomSheet(context: context , builder : (_) {
-    return GestureDetector(
-      child: AddItems(_itemAdd),
-      onTap : () {} ,
-      behavior: HitTestBehavior.opaque,
+// add item method
+void _addItem (String newtitle , double newamount , DateTime chosenDate) {
+    final newItem = Transiction(
+       name : newtitle ,
+       amount : newamount ,
+       date : chosenDate ,
+       id : DateTime.now().toString(),
     );
-  },
-  );
-}
 
-
-// delete item based on its ID
-void _deletedItem(String id) {
     setState(() {
-      _itemlist.removeWhere((element) {
-        return element.id == id ;
+      _userTransictions.add(newItem);
+    });
+
+  }
+
+
+void _startAddItem(BuildContext itemContext) {
+
+    showModalBottomSheet(context: itemContext,  builder: (_) {
+      return  GestureDetector(
+          child:NewTransiction(_addItem),
+          onTap: () {},
+          behavior: HitTestBehavior.opaque,
+      );
+   },);
+} 
+
+ // detelt item based on Item id .
+  void _deleteItem(String id) {
+    setState(() {
+      _userTransictions.removeWhere( (transiction) {
+           return transiction.id == id ;
       });
     });
-}
-
-/*  edit item
-void editItem( String editedItem) {
-  final _itemedit = Items (
-    name : editedItem ,
-    time : DateTime.now() ,
-    id : DateTime.now().toString() ,
-  );
-
-  setState(() {
-    _itemlist.clear;
-  });
-
-} */
-
-
-
-  @override
-  Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(title: Text('MeinApp'),
-        actions: <Widget>[
-          IconButton( icon: Icon(Icons.add),
-           onPressed: () => startAddingItem(context))
-        ],
-        ),
-        body: SingleChildScrollView(
-        child : Column(
-           crossAxisAlignment : CrossAxisAlignment.stretch,
-           children: <Widget>[
-         // ChartItem(),
-          ItemsList(_itemlist , _deletedItem),
-        ],)
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add_box),
-          onPressed :() => startAddingItem(context),
-        ),
-      );
   }
+
+
+
+@override
+Widget build(BuildContext context) {
+
+    return Scaffold (
+      appBar: AppBar(title: Text('TrackerApp'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add) ,
+          onPressed: () => _startAddItem(context),
+         ),
+      ],
+      ),
+
+    body: SingleChildScrollView (
+      child: Column(
+      //mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Chart(_latestTranscition),
+            TranslationList(_userTransictions , _deleteItem),
+          ],)
+       ),
+     //s  floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+       floatingActionButton: FloatingActionButton(child: Icon(Icons.add),
+        onPressed: () => _startAddItem(context) ,),
+      );
+    }
 }
+
+
+
+
