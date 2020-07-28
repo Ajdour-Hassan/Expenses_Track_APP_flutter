@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 
 class ChartBar extends StatelessWidget {
-  
+
   final String label;
   final double spentAmount ;
   final double spendingAmountTotal ;
@@ -10,19 +11,21 @@ class ChartBar extends StatelessWidget {
   ChartBar(this.label , this.spentAmount  , this.spendingAmountTotal);
 
 
-
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget> [
+    return LayoutBuilder(builder: (ctx , constraints) {
+      return Column(children: <Widget> [
     Container(
-    height: 20,
+    height:  constraints.maxHeight * 0.15,
     child: FittedBox(
     child:Text('\$${spentAmount.toStringAsFixed(0)}'),
     ),
     ),
-    SizedBox(height: 4,),
+    SizedBox(
+      height:  constraints.maxHeight * 0.05,
+      ),
     Container (
-      height: 60,
+      height: constraints.maxHeight * 0.6,
       width: 10,
       child: Stack(children: <Widget>[
         Container(
@@ -32,8 +35,8 @@ class ChartBar extends StatelessWidget {
             borderRadius : BorderRadius.circular(20),
           ),
         ),
-        
-          FractionallySizedBox(
+
+         FractionallySizedBox(
           heightFactor: spendingAmountTotal,
           child: Container(
             decoration: BoxDecoration(color: Theme.of(context).primaryColor,
@@ -44,10 +47,16 @@ class ChartBar extends StatelessWidget {
       ],)
     ),
     SizedBox(
-      height: 4,
+      height:  constraints.maxHeight * 0.05,
     ),
-     Text(label),
+    Container(
+      height: constraints.maxHeight * 0.15 ,
+      child:  FittedBox(
+       child: Text(label),
+      ),  
+    ),
     ],
     );
+    },);
   }
-}
+ }

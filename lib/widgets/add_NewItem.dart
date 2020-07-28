@@ -9,15 +9,14 @@ class NewTransiction extends StatefulWidget {
   NewTransiction(this.addNewItem);
 
   @override
-  _NewTransictionState createState() => _NewTransictionState();
+  _NewItemState createState() => _NewItemState();
 
 }
 
-class _NewTransictionState extends State<NewTransiction> {
+class _NewItemState extends State<NewTransiction> {
 
   final _titleController = TextEditingController() ;
   final _amountController = TextEditingController() ;
-
   DateTime _selectedDate ;
 
 
@@ -26,11 +25,10 @@ class _NewTransictionState extends State<NewTransiction> {
    if (_amountController.text.isEmpty) {
       return;
    }
-   
     final entered_text = _titleController.text ;
     final entered_amount = double.parse(_amountController.text) ;
 
-   if ( entered_text.isEmpty || entered_amount <= 0 && _selectedDate == null ) {
+   if ( entered_text.isEmpty && entered_text == null || entered_amount <= 0 && _selectedDate == null ) {
       return;
     }
 
@@ -41,10 +39,11 @@ class _NewTransictionState extends State<NewTransiction> {
               );
 
     Navigator.of(context).pop();
+
   }
 
 
-  void _recordDatePicker() {
+void _recordDatePicker() {
 
     showDatePicker(context: context ,
 
@@ -90,15 +89,17 @@ class _NewTransictionState extends State<NewTransiction> {
                                keyboardType: TextInputType.number,
                                onSubmitted: (_) => _added() ,
                      ),
+                     
                     Container(
-                      height: 70,
+                    height: 70,
                     child:Row (children: <Widget>[
-                      Text(_selectedDate == null ?  'Please enter A Date : ' : (' picked_date : ${DateFormat.yMd().format(_selectedDate)}') , style: TextStyle(color:Colors.green)),
+                      Text(_selectedDate == null ?  'Please enter A Date : ' : (' picked_date : ${DateFormat.yMd().format(_selectedDate)}') , style: TextStyle(color:Colors.black)),
                       FlatButton(child:Text('Choose date'),
                                  textColor: Theme.of(context).primaryColor,
-                                 onPressed: _recordDatePicker ),
+                                 onPressed: _recordDatePicker),
                     ],),
                     ),
+
                     RaisedButton(child: Text('Submit', style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.00),),

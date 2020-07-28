@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:trackerApp/models/transiction.dart';
+import 'package:trackerApp/models/Items.dart';
 import 'package:intl/intl.dart' ;
 import './chart.bar.dart' ;
 
 class Chart extends StatelessWidget {
 
- final List<Transiction> latestTransiction ;
+ final List<Items> latestTransiction ;
 
  Chart(this.latestTransiction) ;
 
@@ -41,9 +41,12 @@ class Chart extends StatelessWidget {
    });
  }
 
+
   @override
   Widget build (BuildContext context) {
-    return Card(
+    return /*Container(
+      height: MediaQuery.of(context).size.height * 0.4 ,
+      child: */ Card(
       margin : EdgeInsets.all(15) ,
       elevation: 6,
       child: Container(
